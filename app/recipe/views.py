@@ -45,3 +45,14 @@ class RecipeViewSets(viewsets.ModelViewSet):
     def get_queryset(self):
         """Return recipes only for the authed user"""
         return self.queryset.filter(user=self.request.user).order_by("-id")
+
+    def get_serializer_class(self):
+        """Return appropriate serializer class"""
+        if self.action == "retrieve":
+            return serializers.RecipeDetailSerializer
+
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        """Create a new recipe"""
+        serializer.save(user=self.request.user)
